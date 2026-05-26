@@ -8,37 +8,37 @@ LLM Gateway 采用经典的**分层架构**，分为四层：
 
 ```{mermaid}
 graph TB
-    subgraph Clients
-        C1[OpenAI SDK]
-        C2[Anthropic SDK]
-        C3[Codex / Claude Code]
-        C4[Browser Console]
+    subgraph clients["Clients"]
+        C1["OpenAI SDK"]
+        C2["Anthropic SDK"]
+        C3["Codex and Claude Code"]
+        C4["Browser Console"]
     end
 
-    subgraph API_Layer[API Layer]
-        A1[health.py]
-        A2[auth.py]
-        A3[admin.py]
-        A4[proxy.py]
+    subgraph api_layer["API Layer"]
+        A1["health"]
+        A2["auth"]
+        A3["admin"]
+        A4["proxy"]
     end
 
-    subgraph Service_Layer[Service Layer]
-        S1[security.py]
-        S2[policy.py]
-        S3[rate_limit.py]
-        S4[litellm_client.py]
-        S5[facts.py]
+    subgraph service_layer["Service Layer"]
+        S1["security"]
+        S2["policy"]
+        S3["rate_limit"]
+        S4["litellm_client"]
+        S5["facts"]
     end
 
-    subgraph Data_Layer[Data Layer]
-        D1[(PostgreSQL)]
-        D2[(Redis)]
+    subgraph data_layer["Data Layer"]
+        D1[("PostgreSQL")]
+        D2[("Redis")]
     end
 
-    Clients --> API_Layer
-    API_Layer --> Service_Layer
-    Service_Layer --> Data_Layer
-    S4 --> Upstream[Upstream LLM]
+    clients --> api_layer
+    api_layer --> service_layer
+    service_layer --> data_layer
+    S4 --> U["Upstream LLM"]
 ```
 
 目录结构
