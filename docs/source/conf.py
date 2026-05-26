@@ -22,7 +22,7 @@ myst_enable_extensions = [
     'directive',
 ]
 
-mermaid_version = '11.4.0'
+mermaid_version = '11.15.0'
 
 html_theme_options = {
     'prev_next_buttons_location': 'bottom',
