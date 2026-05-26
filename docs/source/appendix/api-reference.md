@@ -12,13 +12,13 @@ OpenAI Chat Completions 协议代理。
 
 **请求体**: 与 OpenAI API 完全一致。
 
-.. code-block:: json
-
-    {
-        "model": "gpt-4o",
-        "messages": [{"role": "user", "content": "Hello"}],
-        "stream": false
-    }
+```json
+{
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Hello"}],
+    "stream": false
+}
+```
 
 **响应**: 与 OpenAI API 完全一致。
 
@@ -36,14 +36,14 @@ Anthropic Messages API 协议代理。
 
 **响应**:
 
-.. code-block:: json
-
-    {
-        "object": "list",
-        "data": [
-            {"id": "gpt-4o", "object": "model", "owned_by": "llm-gateway"}
-        ]
-    }
+```json
+{
+    "object": "list",
+    "data": [
+        {"id": "gpt-4o", "object": "model", "owned_by": "llm-gateway"}
+    ]
+}
+```
 
 认证端点
 --------
@@ -54,23 +54,23 @@ Anthropic Messages API 协议代理。
 
 **请求体**:
 
-.. code-block:: json
-
-    {
-        "username": "a12345678",
-        "password": "your-password",
-        "full_name": "张三"
-    }
+```json
+{
+    "username": "a12345678",
+    "password": "your-password",
+    "full_name": "张三"
+}
+```
 
 **响应**:
 
-.. code-block:: json
-
-    {
-        "session_token": "sess-...",
-        "subject": {...},
-        "gateway_key": "gw-..."
-    }
+```json
+{
+    "session_token": "sess-...",
+    "subject": {...},
+    "gateway_key": "gw-..."
+}
+```
 
 ### POST /auth/login
 

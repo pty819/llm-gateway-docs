@@ -24,33 +24,17 @@ security.py -- 认证与身份
 
 ### 密钥生成
 
-.. list-table::
-   :header-rows: 1
-
-   * - 函数
-     - 输出
-     - 用途
-   * - ``generate_gateway_key()``
-     - ``gw-<token_urlsafe(32)>``
-     - API 认证密钥
-   * - ``generate_session_token()``
-     - ``sess-<token_urlsafe(32)>``
-     - 浏览器会话令牌
+| 函数 | 输出 | 用途 |
+|------|------|------|
+| ``generate_gateway_key()`` | ``gw-<token_urlsafe(32)>`` | API 认证密钥 |
+| ``generate_session_token()`` | ``sess-<token_urlsafe(32)>`` | 浏览器会话令牌 |
 
 ### 密码管理
 
-.. list-table::
-   :header-rows: 1
-
-   * - 函数
-     - 算法
-     - 说明
-   * - ``hash_password(password)``
-     - PBKDF2-SHA256, 210k iter
-     - 生成 ``pbkdf2_sha256$iter$salt$digest`` 格式
-   * - ``verify_password(password, hash)``
-     - 常量时间比较
-     - 验证密码是否匹配
+| 函数 | 算法 | 说明 |
+|------|------|------|
+| ``hash_password(password)`` | PBKDF2-SHA256, 210k iter | 生成 ``pbkdf2_sha256$iter$salt$digest`` 格式 |
+| ``verify_password(password, hash)`` | 常量时间比较 | 验证密码是否匹配 |
 
 ### 认证函数
 
@@ -119,30 +103,14 @@ litellm_client.py -- LLM 适配层
 
 统一封装三种协议的 LiteLLM 调用：
 
-.. list-table::
-   :header-rows: 1
-
-   * - 函数
-     - 协议
-     - LiteLLM 方法
-   * - ``completion_once()``
-     - OpenAI Chat
-     - ``litellm.acompletion``
-   * - ``completion_stream()``
-     - OpenAI Chat (stream)
-     - ``litellm.acompletion(stream=True)``
-   * - ``responses_once()``
-     - OpenAI Responses
-     - ``litellm.aresponses``
-   * - ``responses_stream()``
-     - OpenAI Responses (stream)
-     - ``litellm.aresponses(stream=True)``
-   * - ``anthropic_messages_once()``
-     - Anthropic Messages
-     - ``litellm.anthropic_messages``
-   * - ``anthropic_messages_stream()``
-     - Anthropic Messages (stream)
-     - ``litellm.anthropic_messages(stream=True)``
+| 函数 | 协议 | LiteLLM 方法 |
+|------|------|-------------|
+| ``completion_once()`` | OpenAI Chat | ``litellm.acompletion`` |
+| ``completion_stream()`` | OpenAI Chat (stream) | ``litellm.acompletion(stream=True)`` |
+| ``responses_once()`` | OpenAI Responses | ``litellm.aresponses`` |
+| ``responses_stream()`` | OpenAI Responses (stream) | ``litellm.aresponses(stream=True)`` |
+| ``anthropic_messages_once()`` | Anthropic Messages | ``litellm.anthropic_messages`` |
+| ``anthropic_messages_stream()`` | Anthropic Messages (stream) | ``litellm.anthropic_messages(stream=True)`` |
 
 所有流式函数返回 ``(event_string, usage_dict)`` 元组的异步生成器。
 

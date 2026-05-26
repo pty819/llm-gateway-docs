@@ -15,9 +15,9 @@ init_db.py -- 数据库初始化
 2. 如果已有，执行 ``alembic stamp head``（标记当前版本）
 3. 如果没有，执行 ``alembic upgrade head``（创建全部表）
 
-.. code-block:: bash
-
-    python scripts/init_db.py
+```bash
+python scripts/init_db.py
+```
 
 seed_dev.py -- 开发数据填充
 ---------------------------
@@ -30,9 +30,9 @@ seed_dev.py -- 开发数据填充
 - UpstreamTarget: ``dev-upstream``
 - GatewayKey: ``dev-key``
 
-.. code-block:: bash
-
-    python scripts/seed_dev.py
+```bash
+python scripts/seed_dev.py
+```
 
 check_connectivity.py -- 连通性检查
 -----------------------------------
@@ -43,9 +43,9 @@ check_connectivity.py -- 连通性检查
 - asyncpg 连接测试
 - redis-py PING 测试
 
-.. code-block:: bash
-
-    python scripts/check_connectivity.py
+```bash
+python scripts/check_connectivity.py
+```
 
 smoke_controller.py -- 端到端冒烟测试
 -------------------------------------
@@ -57,9 +57,9 @@ smoke_controller.py -- 端到端冒烟测试
 3. 验证响应内容和用量记录
 4. 清理临时 Key
 
-.. code-block:: bash
-
-    python scripts/smoke_controller.py
+```bash
+python scripts/smoke_controller.py
+```
 
 smoke_upstream.py -- 上游连通性测试
 -----------------------------------
@@ -70,6 +70,6 @@ smoke_upstream.py -- 上游连通性测试
 2. 发送测试 Chat Completion
 3. 报告连通状态
 
-.. code-block:: bash
-
-    python scripts/smoke_upstream.py
+```bash
+python scripts/smoke_upstream.py
+```

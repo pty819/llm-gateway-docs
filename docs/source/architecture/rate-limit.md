@@ -13,9 +13,9 @@
 graph LR
     A[Incoming Request] --> B[resolve_effective_rate_policy]
     B --> C[check_request_rate]
-    C --> D{RPM 超限?}
+    C --> D{RPM exceeded?}
     D -->|Yes| E[429 Rate Limit Exceeded]
-    D -->|No| F{并发超限?}
+    D -->|No| F{Concurrency exceeded?}
     F -->|Yes| E
     F -->|No| G[Process Request]
     G --> H[Release Concurrency Slot]
@@ -26,43 +26,33 @@ graph LR
 
 ``resolve_effective_rate_policy()`` 从三个层级收集限流策略：
 
-.. list-table::
-   :header-rows: 1
-
-   * - 层级
-     - Key
-     - 说明
-   * - Key 级
-     - gateway_key_id
-     - 针对单个 API Key
-   * - Subject 级
-     - subject_id
-     - 针对单个用户/服务账户
-   * - Project 级
-     - project_id
-     - 针对单个项目
+| 层级 | Key | 说明 |
+|------|-----|------|
+| Key 级 | gateway_key_id | 针对单个 API Key |
+| Subject 级 | subject_id | 针对单个用户/服务账户 |
+| Project 级 | project_id | 针对单个项目 |
 
 最终生效值 = min(所有匹配策略的 RPM, 所有匹配策略的并发限制, 全局默认值)
 
-.. code-block:: python
+```python
+# 全局默认值
+DEFAULT_RPM = 120
+DEFAULT_CONCURRENCY = 8
 
-    # 全局默认值
-    DEFAULT_RPM = 120
-    DEFAULT_CONCURRENCY = 8
-
-    # 示例：Key 级 60 RPM，Subject 级 200 RPM
-    # 生效 RPM = min(60, 200, 120) = 60
+# 示例：Key 级 60 RPM，Subject 级 200 RPM
+# 生效 RPM = min(60, 200, 120) = 60
+```
 
 RPM 滑动窗口
 ------------
 
 使用 Redis ``INCR`` + ``EXPIRE`` 实现固定窗口计数器：
 
-.. code-block:: text
-
-    Key: ratelimit:{scope}:{scope_id}:rpm
-    Value: 当前窗口内的请求数
-    TTL: 60 秒
+```text
+Key: ratelimit:{scope}:{scope_id}:rpm
+Value: 当前窗口内的请求数
+TTL: 60 秒
+```
 
 每次请求：
 
@@ -75,11 +65,11 @@ RPM 滑动窗口
 
 使用 Redis ``INCR`` / ``DECR`` 实现并发计数器：
 
-.. code-block:: text
-
-    Key: ratelimit:{scope}:{scope_id}:concurrency
-    Value: 当前并发请求数
-    TTL: 900 秒（安全网，防止泄漏）
+```text
+Key: ratelimit:{scope}:{scope_id}:concurrency
+Value: 当前并发请求数
+TTL: 900 秒（安全网，防止泄漏）
+```
 
 非流式请求：
 1. 请求开始前 ``INCR``

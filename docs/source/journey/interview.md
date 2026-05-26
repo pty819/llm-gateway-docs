@@ -99,8 +99,8 @@
 
 ```{mermaid}
 graph TD
-    Q[模糊需求] --> I1[9轮 Socratic 访谈]
-    I1 --> S[精确规格]
+    Q[Vague Requirements] --> I1[9 Rounds Socratic Interview]
+    I1 --> S[Precise Spec]
     S --> P[PRD]
     P --> M[Master Spec Group]
     M --> G1[Blueprint Spec]
@@ -116,21 +116,9 @@ graph TD
 
 访谈结束后，我们产出了以下规格文档：
 
-.. list-table::
-   :header-rows: 1
-
-   * - 文档
-     - 用途
-     - 核心内容
-   * - Deep Interview Spec
-     - 访谈记录和约束分析
-     - 10.2% 模糊度、5 个决策边界、3 个硬约束
-   * - PRD Blueprint
-     - 产品需求文档
-     - 用户画像、核心能力、非目标、阶段假设
-   * - Master Spec Group
-     - 总体协调文档
-     - ADR（架构决策记录）、产出物矩阵、验收标准
-   * - Test Spec
-     - 测试规格
-     - 验证矩阵、单元/集成测试清单、可观测性验证
+| 文档 | 用途 | 核心内容 |
+|------|------|----------|
+| Deep Interview Spec | 访谈记录和约束分析 | 10.2% 模糊度、5 个决策边界、3 个硬约束 |
+| PRD Blueprint | 产品需求文档 | 用户画像、核心能力、非目标、阶段假设 |
+| Master Spec Group | 总体协调文档 | ADR（架构决策记录）、产出物矩阵、验收标准 |
+| Test Spec | 测试规格 | 验证矩阵、单元/集成测试清单、可观测性验证 |

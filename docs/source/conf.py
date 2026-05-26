@@ -19,7 +19,6 @@ html_static_path = ['_static']
 myst_enable_extensions = [
     'colon_fence',
     'deflist',
-    'directive',
 ]
 
 mermaid_version = '11.15.0'

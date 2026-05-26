@@ -9,36 +9,16 @@ Ultragoal 工作流
 
 ### 目标分解统计
 
-.. list-table::
-   :header-rows: 1
-
-   * - 阶段
-     - 目标数
-     - 耗时
-   * - 项目初始化
-     - 8
-     - ~15 min
-   * - 核心数据库模型
-     - 15
-     - ~20 min
-   * - API 层 - 管理
-     - 25
-     - ~25 min
-   * - API 层 - 代理
-     - 12
-     - ~15 min
-   * - 服务层
-     - 20
-     - ~20 min
-   * - 前端 - 管理控制台
-     - 22
-     - ~25 min
-   * - 自助服务 + 团队
-     - 15
-     - ~15 min
-   * - 测试 + 验证
-     - 5
-     - ~10 min
+| 阶段 | 目标数 | 耗时 |
+|------|--------|------|
+| 项目初始化 | 8 | ~15 min |
+| 核心数据库模型 | 15 | ~20 min |
+| API 层 - 管理 | 25 | ~25 min |
+| API 层 - 代理 | 12 | ~15 min |
+| 服务层 | 20 | ~20 min |
+| 前端 - 管理控制台 | 22 | ~25 min |
+| 自助服务 + 团队 | 15 | ~15 min |
+| 测试 + 验证 | 5 | ~10 min |
 
 ### 关键里程碑
 
@@ -78,7 +58,7 @@ gantt
     title LLM Gateway Development Timeline
     dateFormat YYYY-MM-DD
     section Design
-    Interview & Spec     :done, des1, 2026-05-22, 1d
+    Interview and Spec     :done, des1, 2026-05-22, 1d
     Architecture Design  :done, des2, 2026-05-22, 1d
     section Phase 1
     Database Models      :done, p1a, 2026-05-22, 1d

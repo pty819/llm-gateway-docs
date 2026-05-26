@@ -52,7 +52,7 @@ graph LR
         Policy[Authorization]
         Rate[Rate Limiting]
         Route[Routing]
-        Audit[Audit & Facts]
+        Audit[Audit and Facts]
     end
 ```
 

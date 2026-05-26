@@ -6,29 +6,29 @@
 
 ```{mermaid}
 graph TB
-    subgraph 入口安全
+    subgraph Ingress_Security[Ingress Security]
         IP[Client IP]
-        TLS[TLS 终端]
+        TLS[TLS Termination]
     end
 
-    subgraph 认证层
+    subgraph Auth_Layer[Authentication Layer]
         GK[Gateway Key Auth]
         ST[Session Token Auth]
         AT[Admin Token Auth]
     end
 
-    subgraph 授权层
+    subgraph Authz_Layer[Authorization Layer]
         ME[Model Entitlement]
         MTG[Model Team Grant]
         IPC[IP CIDR Policy]
     end
 
-    subgraph 限流层
+    subgraph Rate_Layer[Rate Limiting Layer]
         RPM[RPM Sliding Window]
         CC[Concurrency Slots]
     end
 
-    subgraph 数据安全
+    subgraph Data_Security[Data Security]
         KH[Key Hashing SHA-256]
         SK[Secret Redaction]
         AE[Audit Events]
@@ -98,20 +98,20 @@ CIDR 校验使用 Python ``ipaddress`` 模块，支持 IPv4 和 IPv6。
 
 所有管理员操作产生 ``AuditEvent`` 记录：
 
-.. code-block:: json
-
-    {
-        "actor_subject_id": "uuid-of-admin",
-        "action": "update",
-        "resource_type": "model_alias",
-        "resource_id": "uuid-of-model",
-        "outcome": "success",
-        "detail": {
-            "field": "ip_allowlist_cidrs",
-            "old_value": ["10.0.0.0/8"],
-            "new_value": ["10.0.0.0/8", "172.16.0.0/12"]
-        }
+```json
+{
+    "actor_subject_id": "uuid-of-admin",
+    "action": "update",
+    "resource_type": "model_alias",
+    "resource_id": "uuid-of-model",
+    "outcome": "success",
+    "detail": {
+        "field": "ip_allowlist_cidrs",
+        "old_value": ["10.0.0.0/8"],
+        "new_value": ["10.0.0.0/8", "172.16.0.0/12"]
     }
+}
+```
 
 自助注册安全
 ------------

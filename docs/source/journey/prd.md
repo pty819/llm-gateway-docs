@@ -81,7 +81,7 @@ Phase 2 引入自助注册后，需要团队模型授权来管理扩大的用户
 
 ```{mermaid}
 graph LR
-    subgraph Phase 1
+    subgraph Phase1[Phase 1]
         A1[Gateway Key Auth]
         A2[Transparent Proxy]
         A3[Model Routing]
@@ -90,7 +90,7 @@ graph LR
         A6[Admin Console]
     end
 
-    subgraph Phase 2
+    subgraph Phase2[Phase 2]
         B1[Self-Service Register]
         B2[Team RBAC]
         B3[Session Auth]
@@ -98,5 +98,5 @@ graph LR
         B5[User Dashboard]
     end
 
-    Phase 1 --> Phase 2
+    Phase1 --> Phase2
 ```

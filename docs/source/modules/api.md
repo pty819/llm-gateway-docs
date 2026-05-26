@@ -6,69 +6,35 @@ API 层由四个路由模块组成，通过 FastAPI 依赖注入共享公共服�
 路由注册
 --------
 
-.. code-block:: python
-
-    app.include_router(health.router)
-    app.include_router(auth.router, prefix="/auth")
-    app.include_router(admin.router, prefix="/admin")
-    app.include_router(proxy.router, prefix="/v1")
+```python
+app.include_router(health.router)
+app.include_router(auth.router, prefix="/auth")
+app.include_router(admin.router, prefix="/admin")
+app.include_router(proxy.router, prefix="/v1")
+```
 
 健康检查（health.py）
 --------------------
 
-.. list-table::
-   :header-rows: 1
-
-   * - 方法
-     - 路径
-     - 认证
-     - 说明
-   * - GET
-     - /health/live
-     - 无
-     - 存活探针，始终返回 ok
-   * - GET
-     - /health/ready
-     - 无
-     - 就绪探针，检查 PostgreSQL + Redis
-   * - GET
-     - /admin/diagnostics
-     - Admin
-     - 诊断信息（版本、环境）
+| 方法 | 路径 | 认证 | 说明 |
+|------|------|------|------|
+| GET | /health/live | 无 | 存活探针，始终返回 ok |
+| GET | /health/ready | 无 | 就绪探针，检查 PostgreSQL + Redis |
+| GET | /admin/diagnostics | Admin | 诊断信息（版本、环境） |
 
 自助认证（auth.py）
 -------------------
 
-.. list-table::
-   :header-rows: 1
-
-   * - 方法
-     - 路径
-     - 说明
-   * - POST
-     - /auth/register
-     - 自助注册（工号 + 密码）
-   * - POST
-     - /auth/login
-     - 登录，返回 session token
-   * - POST
-     - /auth/logout
-     - 登出，撤销 session token
-   * - GET
-     - /auth/me
-     - 当前用户档案
-   * - GET
-     - /auth/usage/summary
-     - 当前用户用量统计
-   * - PATCH
-     - /auth/password
-     - 修改密码
-   * - PATCH
-     - /auth/profile
-     - 修改显示名
-   * - POST
-     - /auth/keys
-     - 签发个人 Gateway Key
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /auth/register | 自助注册（工号 + 密码） |
+| POST | /auth/login | 登录，返回 session token |
+| POST | /auth/logout | 登出，撤销 session token |
+| GET | /auth/me | 当前用户档案 |
+| GET | /auth/usage/summary | 当前用户用量统计 |
+| PATCH | /auth/password | 修改密码 |
+| PATCH | /auth/profile | 修改显示名 |
+| POST | /auth/keys | 签发个人 Gateway Key |
 
 注册流程创建以下资源：
 
@@ -85,95 +51,40 @@ API 层由四个路由模块组成，通过 FastAPI 依赖注入共享公共服�
 
 ### 资源端点
 
-.. list-table::
-   :header-rows: 1
-
-   * - 资源
-     - 操作
-     - 特殊能力
-   * - Subject
-     - CRUD + 搜索 + 密码重置 + 状态切换
-     - 删除时级联清理关联资源
-   * - Project
-     - CRUD
-     - 成员管理
-   * - ProjectMembership
-     - 创建 + 查询
-     - --
-   * - GatewayKey
-     - 创建 + 查询 + 状态切换
-     - 创建时返回明文（仅一次）
-   * - ModelAlias
-     - CRUD
-     - 创建时自动授权 admin 团队
-   * - ModelEntitlement
-     - 创建 + 查询 + 状态切换
-     - --
-   * - Team
-     - CRUD
-     - --
-   * - TeamMembership
-     - 创建 + 查询 + 状态切换
-     - --
-   * - ModelTeamGrant
-     - 创建 + 查询 + 状态切换
-     - --
-   * - UpstreamTarget
-     - CRUD + 健康检查
-     - 删除 ModelAlias 支持 cascade
-   * - RouterCommandConfig
-     - CRUD
-     - 返回渲染好的 CLI 命令
-   * - RatePolicy
-     - CRUD
-     - --
+| 资源 | 操作 | 特殊能力 |
+|------|------|----------|
+| Subject | CRUD + 搜索 + 密码重置 + 状态切换 | 删除时级联清理关联资源 |
+| Project | CRUD | 成员管理 |
+| ProjectMembership | 创建 + 查询 | -- |
+| GatewayKey | 创建 + 查询 + 状态切换 | 创建时返回明文（仅一次） |
+| ModelAlias | CRUD | 创建时自动授权 admin 团队 |
+| ModelEntitlement | 创建 + 查询 + 状态切换 | -- |
+| Team | CRUD | -- |
+| TeamMembership | 创建 + 查询 + 状态切换 | -- |
+| ModelTeamGrant | 创建 + 查询 + 状态切换 | -- |
+| UpstreamTarget | CRUD + 健康检查 | 删除 ModelAlias 支持 cascade |
+| RouterCommandConfig | CRUD | 返回渲染好的 CLI 命令 |
+| RatePolicy | CRUD | -- |
 
 ### 分析端点
 
-.. list-table::
-   :header-rows: 1
-
-   * - 方法
-     - 路径
-     - 说明
-   * - GET
-     - /admin/usage/summary
-     - 按模型/用户/项目聚合用量
-   * - GET
-     - /admin/usage/ranking
-     - 按 Token 消耗排名
-   * - GET
-     - /admin/audit-events
-     - 最近 200 条审计事件
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /admin/usage/summary | 按模型/用户/项目聚合用量 |
+| GET | /admin/usage/ranking | 按 Token 消耗排名 |
+| GET | /admin/audit-events | 最近 200 条审计事件 |
 
 代理 API（proxy.py）
 -------------------
 
 代理 API 是核心 LLM 代理，支持三种协议：
 
-.. list-table::
-   :header-rows: 1
-
-   * - 方法
-     - 路径
-     - 协议
-     - 流式
-   * - POST
-     - /v1/chat/completions
-     - OpenAI Chat Completions
-     - 支持
-   * - POST
-     - /v1/responses
-     - OpenAI Responses API
-     - 支持
-   * - POST
-     - /v1/messages
-     - Anthropic Messages
-     - 支持
-   * - GET
-     - /v1/models
-     - 模型列表
-     - --
+| 方法 | 路径 | 协议 | 流式 |
+|------|------|------|------|
+| POST | /v1/chat/completions | OpenAI Chat Completions | 支持 |
+| POST | /v1/responses | OpenAI Responses API | 支持 |
+| POST | /v1/messages | Anthropic Messages | 支持 |
+| GET | /v1/models | 模型列表 | -- |
 
 所有代理端点共享相同的请求处理流程：
 

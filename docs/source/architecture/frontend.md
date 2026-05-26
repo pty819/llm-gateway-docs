@@ -4,34 +4,20 @@
 技术栈
 ------
 
-.. list-table::
-   :header-rows: 1
-
-   * - 技术
-     - 版本
-     - 用途
-   * - SvelteKit
-     - 2.57
-     - 全栈框架
-   * - Svelte
-     - 5.55
-     - UI 组件（runes 模式）
-   * - Vite
-     - 8
-     - 构建工具
-   * - TypeScript
-     - 6
-     - 类型安全
-   * - Lucide
-     - latest
-     - 图标库
+| 技术 | 版本 | 用途 |
+|------|------|------|
+| SvelteKit | 2.57 | 全栈框架 |
+| Svelte | 5.55 | UI 组件（runes 模式） |
+| Vite | 8 | 构建工具 |
+| TypeScript | 6 | 类型安全 |
+| Lucide | latest | 图标库 |
 
 架构图
 ------
 
 ```{mermaid}
 graph TB
-    subgraph SvelteKit App
+    subgraph SvelteKit_App[SvelteKit App]
         Layout["+layout.svelte"]
         Page["+page.svelte"]
 
@@ -43,7 +29,7 @@ graph TB
             RT[ResourceTable]
         end
 
-        subgraph API Client
+        subgraph API_Client[API Client]
             AC[AdminApiClient]
             TY[Type Definitions]
         end
@@ -59,9 +45,9 @@ graph TB
 
     Layout --> Page
     Page --> Components
-    Page --> API Client
+    Page --> API_Client
     Page --> State
-    API Client --> TY
+    API_Client --> TY
 ```
 
 页面结构
@@ -112,16 +98,16 @@ API 客户端
 
 ``AdminApiClient`` 封装了所有与后端的通信：
 
-.. code-block:: typescript
-
-    class AdminApiClient {
-        // 自动附加认证 Header
-        // 支持 admin token 和 session token 两种模式
-        get<T>(path: string): Promise<T>
-        post<T>(path: string, body: unknown): Promise<T>
-        patch<T>(path: string, body: unknown): Promise<T>
-        delete<T>(path: string): Promise<T>
-    }
+```typescript
+class AdminApiClient {
+    // 自动附加认证 Header
+    // 支持 admin token 和 session token 两种模式
+    get<T>(path: string): Promise<T>
+    post<T>(path: string, body: unknown): Promise<T>
+    patch<T>(path: string, body: unknown): Promise<T>
+    delete<T>(path: string): Promise<T>
+}
+```
 
 错误处理支持两种格式：
 - FastAPI 格式：``{detail: "message"}``
@@ -168,15 +154,15 @@ Session 管理
 
 Vite 开发服务器配置了以下代理规则：
 
-.. code-block:: typescript
-
-    server: {
-        proxy: {
-            '/admin': 'http://127.0.0.1:18080',
-            '/auth':  'http://127.0.0.1:18080',
-            '/health':'http://127.0.0.1:18080',
-            '/v1':    'http://127.0.0.1:18080',
-        }
+```typescript
+server: {
+    proxy: {
+        '/admin': 'http://127.0.0.1:18080',
+        '/auth':  'http://127.0.0.1:18080',
+        '/health':'http://127.0.0.1:18080',
+        '/v1':    'http://127.0.0.1:18080',
     }
+}
+```
 
 这使得前端开发时无需 CORS 配置，所有 API 请求自动代理到后端。

@@ -6,34 +6,34 @@ ER 图
 
 ```{mermaid}
 erDiagram
-    Subject ||--o{ Project : "owns"
-    Subject ||--o{ ProjectMembership : "in"
-    Subject ||--o{ GatewayKey : "has"
-    Subject ||--o{ TeamMembership : "in"
-    Subject ||--o{ UserSession : "has"
-    Subject ||--o{ RequestFact : "records"
-    Subject ||--o{ AuditEvent : "triggers"
+    Subject ||--o{ Project : owns
+    Subject ||--o{ ProjectMembership : in
+    Subject ||--o{ GatewayKey : has
+    Subject ||--o{ TeamMembership : in
+    Subject ||--o{ UserSession : has
+    Subject ||--o{ RequestFact : records
+    Subject ||--o{ AuditEvent : triggers
 
-    Project ||--o{ ProjectMembership : "contains"
-    Project ||--o{ GatewayKey : "scopes"
-    Project ||--o{ RequestFact : "records"
+    Project ||--o{ ProjectMembership : contains
+    Project ||--o{ GatewayKey : scopes
+    Project ||--o{ RequestFact : records
 
-    ModelAlias ||--o{ UpstreamTarget : "routes to"
-    ModelAlias ||--o{ ModelEntitlement : "granted via"
-    ModelAlias ||--o{ ModelTeamGrant : "granted via"
-    ModelAlias ||--o{ RouterCommandConfig : "configured by"
-    ModelAlias ||--o{ RequestFact : "requested as"
+    ModelAlias ||--o{ UpstreamTarget : routes_to
+    ModelAlias ||--o{ ModelEntitlement : granted_via
+    ModelAlias ||--o{ ModelTeamGrant : granted_via
+    ModelAlias ||--o{ RouterCommandConfig : configured_by
+    ModelAlias ||--o{ RequestFact : requested_as
 
-    Team ||--o{ TeamMembership : "has"
-    Team ||--o{ ModelTeamGrant : "granted"
+    Team ||--o{ TeamMembership : has
+    Team ||--o{ ModelTeamGrant : granted
 
-    UpstreamTarget ||--o{ RequestFact : "served by"
+    UpstreamTarget ||--o{ RequestFact : served_by
 
     Subject {
         uuid id PK
         string name
-        string type "USER|SERVICE"
-        string state "ACTIVE|DISABLED"
+        string type USER_or_SERVICE
+        string state ACTIVE_or_DISABLED
         string login_username UK
         string password_hash
         boolean is_admin
@@ -58,7 +58,7 @@ erDiagram
         boolean supports_streaming
         boolean supports_tools
         boolean supports_reasoning
-        string ip_policy_mode "ALL_PASS|ALLOWLIST"
+        string ip_policy_mode ALL_PASS_or_ALLOWLIST
         jsonb ip_allowlist_cidrs
         timestamp created_at
         timestamp updated_at
@@ -69,7 +69,7 @@ erDiagram
         uuid subject_id FK
         uuid project_id FK
         string name
-        string key_prefix "indexed"
+        string key_prefix indexed
         string key_hash
         string state
         timestamp expires_at
@@ -177,21 +177,11 @@ vLLM Router 的配置。存储 ``worker_urls``、``policy``（一致性哈希或
 
 三层限流配置：
 
-.. list-table::
-   :header-rows: 1
-
-   * - Scope
-     - 作用域
-     - 示例
-   * - key
-     - 单个 Gateway Key
-     - 某个 Key 限制 60 RPM
-   * - subject
-     - 单个用户/服务账户
-     - 某用户限制 120 RPM
-   * - project
-     - 单个项目
-     - 某项目限制 500 RPM
+| Scope | 作用域 | 示例 |
+|-------|--------|------|
+| key | 单个 Gateway Key | 某个 Key 限制 60 RPM |
+| subject | 单个用户/服务账户 | 某用户限制 120 RPM |
+| project | 单个项目 | 某项目限制 500 RPM |
 
 生效规则：取所有匹配策略中的**最小值**（最严格 wins）。
 
