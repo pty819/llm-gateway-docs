@@ -63,23 +63,44 @@ TTL: 60 秒
 并发槽位
 --------
 
-使用 Redis ``INCR`` / ``DECR`` 实现并发计数器：
+使用 Redis ``INCR`` / ``DECR`` 实现并发计数器，分为 acquire/release 两步：
 
 ```text
-Key: ratelimit:{scope}:{scope_id}:concurrency
+Key: concurrency:key:{key_id}
 Value: 当前并发请求数
 TTL: 900 秒（安全网，防止泄漏）
 ```
 
-非流式请求：
-1. 请求开始前 ``INCR``
-2. 如果超限，``DECR`` 并拒绝
-3. 请求完成后 ``DECR``
+**非流式请求：**
 
-流式请求：
-1. 请求开始前 ``INCR``
-2. 在 async generator 中处理
-3. Generator 结束后 ``DECR``
+1. ``acquire_concurrency_slot()`` -- INCR 并检查，超限则 DECR 并抛出 ``RateLimitExceeded``
+2. 在 ``except RateLimitExceeded`` 中记录 ``RATE_LIMITED`` 事实，返回 429
+3. 请求成功完成后释放
+
+**流式请求（关键改进）：**
+
+1. 在创建 ``StreamingResponse`` **之前**调用 ``acquire_concurrency_slot()``
+2. 如果超限，记录 ``RATE_LIMITED`` 事实（包含完整的认证、模型、上游上下文）并返回 429
+3. 如果成功获取槽位，将 ``concurrency_key`` 传入流式 generator
+4. 在 generator 的 ``finally`` 块中调用 ``release_concurrency_slot()``，使用 ``suppress(Exception)`` 确保释放不抛异常
+
+这个设计的核心原则是：**并发超限也必须留痕**。早期的实现将并发检查放在 generator 内部，
+超限时无法记录包含完整路由信息的事实。现在将并发获取提前到 generator 之外，
+确保无论限流发生在哪个阶段，都能记录准确的审计数据。
+
+审计完整性
+----------
+
+限流系统现在保证了**全路径审计**：
+
+| 限流触发点 | 是否记录事实 | 事实内容 |
+|-----------|------------|---------|
+| RPM 超限（路由前） | 是 | subject_id, project_id, endpoint_family |
+| 并发超限（路由前） | 是 | subject_id, project_id, endpoint_family |
+| 并发超限（路由后，非流式） | 是 | 完整上下文：model_alias, upstream_target_id |
+| 并发超限（路由后，流式） | 是 | 完整上下文 + streaming=True |
+| 请求成功 | 是 | 完整上下文 + token 用量 |
+| 请求失败（上游错误） | 是 | 完整上下文 + error_detail |
 
 故障关闭
 --------

@@ -96,6 +96,8 @@ CIDR 校验使用 Python ``ipaddress`` 模块，支持 IPv4 和 IPv6。
 审计追踪
 --------
 
+### 管理员操作审计
+
 所有管理员操作产生 ``AuditEvent`` 记录：
 
 ```json
@@ -112,6 +114,40 @@ CIDR 校验使用 Python ``ipaddress`` 模块，支持 IPv4 和 IPv6。
     }
 }
 ```
+
+### 请求事实审计（全路径覆盖）
+
+每一个代理请求，无论成功还是失败，都会产生一条 ``RequestFact`` 记录。
+系统经过硬化，确保以下所有路径都留痕：
+
+| 请求结果 | outcome 值 | 记录时机 |
+|----------|-----------|---------|
+| 认证失败 | ``AUTH_FAILURE`` | 认证阶段 |
+| 策略拒绝 | ``POLICY_DENIAL`` | 授权阶段 |
+| RPM 超限 | ``RATE_LIMITED`` | 限流阶段 |
+| 并发超限 | ``RATE_LIMITED`` | 并发槽位获取阶段（路由前后均覆盖） |
+| 适配失败 | ``ADAPTER_FAILURE`` | LiteLLM 调用失败 |
+| 上游失败 | ``UPSTREAM_FAILURE`` | 上游返回错误 |
+| 客户端取消 | ``CLIENT_CANCELLED`` | 流式请求被中断 |
+| 成功 | ``SUCCESS`` | 请求完成 |
+
+**关键硬化点**：并发超限曾在流式请求中被遗漏（因为检查在 generator 内部）。
+现在并发检查提前到 ``StreamingResponse`` 创建之前，超限时能记录完整的
+认证上下文、模型别名、上游目标信息。
+
+### ModelEntitlement 验证
+
+创建 ModelEntitlement 时强制校验：
+- 必须且只能指定一个 scope（``subject_id``、``project_id`` 或 ``gateway_key_id``）
+- 引用的实体必须存在（不存在返回 404）
+
+### 前端安全
+
+登出时清除所有敏感状态：
+- Session token
+- 明文密钥（``plaintextKey``）
+- 复制状态（``copiedItem``）
+- 错误信息（``pageError``）
 
 自助注册安全
 ------------

@@ -70,9 +70,38 @@ app.include_router(proxy.router, prefix="/v1")
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | /admin/usage/summary | 按模型/用户/项目聚合用量 |
-| GET | /admin/usage/ranking | 按 Token 消耗排名 |
+| GET | /admin/usage/summary | 按模型/用户/项目聚合用量（含成功/失败计数） |
+| GET | /admin/usage/ranking | 按 Token 消耗排名（含 prompt/completion/total 明细） |
+| GET | /admin/analytics/time-buckets | 时间序列聚合（分钟/小时/天） |
+| GET | /admin/analytics/drilldown | 按维度下钻（模型/用户/项目/端点/结果/流式） |
 | GET | /admin/audit-events | 最近 200 条审计事件 |
+
+**时间序列聚合** (``/admin/analytics/time-buckets``)
+
+支持分钟、小时、天级别的分桶聚合，返回每个时间桶的：
+
+- 请求总数、成功/失败计数
+- Token 用量（prompt/completion/total/cached）
+- 延迟指标（平均延迟、平均 TTFT、平均流式时长）
+- 推理性能（平均排队时间、Prefill 耗时、Decode 耗时、KV Cache 利用率）
+- 重试/回退统计
+
+可按模型、用户、项目过滤。
+
+**维度下钻** (``/admin/analytics/drilldown``)
+
+支持 6 个维度下钻：
+
+| 维度 | 说明 |
+|------|------|
+| model | 按模型别名 |
+| subject | 按用户 |
+| project | 按项目 |
+| endpoint | 按协议类型（Chat/Responses/Messages） |
+| outcome | 按请求结果 |
+| streaming | 按流式/非流式 |
+
+每个维度返回同样的指标集（用量、延迟、推理性能），用于分析特定维度的性能瓶颈。
 
 代理 API（proxy.py）
 -------------------

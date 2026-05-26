@@ -96,7 +96,7 @@ llm_gateway/
 Gateway 对下游客户端完全透明。OpenAI SDK、Anthropic SDK 直接将 API 端点指向 Gateway 即可，
 无需修改请求格式。
 
-### 全链路审计
+### 全链路审计 + 容量规划
 
 每个请求产生一条 ``RequestFact`` 记录，包含：
 
@@ -106,8 +106,16 @@ Gateway 对下游客户端完全透明。OpenAI SDK、Anthropic SDK 直接将 AP
 - 模型别名、上游目标
 - 是否流式
 - 结果状态（成功/认证失败/策略拒绝/限流/适配失败/上游失败/客户端取消）
-- Token 用量
+- Token 用量（prompt/completion/total/cached）
+- 延迟指标（总延迟、TTFT、流式时长）
+- 推理性能（排队时间、Prefill 耗时、Decode 耗时、KV Cache 利用率）
+- 重试/回退统计
 - 错误信息
+
+基于这些事实，管理 API 提供两个分析端点：
+
+- ``/admin/analytics/time-buckets`` -- 时间序列聚合（分钟/小时/天级别），用于趋势分析和容量规划
+- ``/admin/analytics/drilldown`` -- 按维度下钻（模型/用户/项目/端点/结果/流式），用于定位性能瓶颈
 
 ### 最小权限
 

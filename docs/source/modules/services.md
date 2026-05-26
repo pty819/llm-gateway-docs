@@ -95,8 +95,15 @@ rate_limit.py -- 限流服务
 
 ### 并发控制
 
-``concurrency_slot(redis, scope, scope_id, limit)``
-: 异步上下文管理器，INCR 进入 / DECR 退出，900 秒安全 TTL。
+``acquire_concurrency_slot(redis, key_id, limit)``
+: 独立获取并发槽位，INCR 并检查，超限则 DECR 并抛出 ``RateLimitExceeded``。
+返回 ``counter_key`` 用于后续释放。
+
+``release_concurrency_slot(redis, counter_key)``
+: 独立释放并发槽位，DECR。用于流式请求在 generator 的 ``finally`` 中释放。
+
+``concurrency_slot(redis, key_id, limit)``
+: 异步上下文管理器，组合 acquire + release，适用于非流式请求。900 秒安全 TTL。
 
 litellm_client.py -- LLM 适配层
 -------------------------------

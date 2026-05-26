@@ -67,6 +67,14 @@ graph LR
 | IP allowlist denies disallowed client | CIDR 策略拒绝 |
 | Key-scoped rate policy blocks | 限流策略生效 |
 
+### 审计完整性（test_audit_fixes.py）
+
+| 测试 | 验证内容 |
+|------|----------|
+| Non-stream concurrency limit returns 429 | 并发超限返回 429 + 记录 RATE_LIMITED fact |
+| Stream concurrency limit before SSE | 流式请求并发超限在 SSE 开始前返回 429 + 记录 fact |
+| Model entitlement exactly one scope | 必须且只能指定一个 scope，引用实体必须存在 |
+
 ### 管理 API
 
 | 测试 | 验证内容 |

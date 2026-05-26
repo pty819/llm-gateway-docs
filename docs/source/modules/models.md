@@ -91,11 +91,28 @@ graph LR
 | request_id | str | 唯一请求标识 |
 | started_at / ended_at | timestamp | 请求时间范围 |
 | endpoint_family | EndpointFamily | 协议类型 |
-| subject_id | FK | 认证主体 |
+| subject_id / subject_type | FK + SubjectType | 认证主体及类型 |
 | project_id | FK | 归属项目 |
 | model_alias | str | 请求的模型别名 |
 | upstream_target_id | FK | 实际上游 |
 | streaming | bool | 是否流式 |
 | outcome | RequestOutcome | 请求结果 |
+| usage_source | UsageSource | 用量数据来源 |
 | prompt/completion/total_tokens | int | Token 用量 |
+| cached_tokens | int | 缓存命中 token 数 |
+| latency_ms | int | 总延迟（毫秒） |
+| time_to_first_token_ms | int | TTFT（毫秒） |
+| stream_duration_ms | int | 流式传输时长（毫秒） |
+| retry_count | int | 重试次数 |
+| fallback_count | int | 回退次数 |
+| fallback_tokens | int | 回退消耗 token |
+| queue_ms | int | vLLM 排队时间（毫秒） |
+| prefill_ms | int | Prefill 耗时（毫秒） |
+| decode_ms | int | Decode 耗时（毫秒） |
+| kv_cache_usage | float | vLLM KV Cache 利用率（0-1） |
+| performance_detail | JSONB | 额外性能元数据 |
 | error_class / error_detail | str | 错误信息 |
+
+RequestFact 同时服务于两个目的：
+- **审计追踪** -- 不可变的请求级证据，覆盖所有结果状态
+- **容量规划** -- 推理性能指标（TTFT、延迟、Prefill/Decode 耗时、KV Cache 利用率）为容量规划提供数据支撑
