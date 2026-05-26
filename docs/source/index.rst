@@ -6,6 +6,7 @@ LLM Gateway Documentation
    :caption: Design Journey
 
    journey/origin
+   journey/competitive-analysis
    journey/interview
    journey/prd
    journey/iteration
@@ -44,6 +45,7 @@ LLM Gateway Documentation
 
    appendix/api-reference
    appendix/tech-stack
+   appendix/prefill-decode-prefix-caching
 
 Indices and tables
 ==================
